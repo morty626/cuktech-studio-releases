@@ -1,0 +1,10 @@
+{
+  "beta": {
+    "mac_arm64": {
+      "sha256": "ae64e5c1e86fdc7f479cb39675c809260079ddad2ac916f9251d79cb3314d59c",
+      "url": "https://github.com/morty626/cuktech-studio-releases/releases/download/v0.1.0-beta.7/CUKTECH-Studio-0.1.0-beta.7-macos-arm64.zip"
+    },
+    "release": "https://github.com/morty626/cuktech-studio-releases/releases/tag/v0.1.0-beta.7",
+    "version": "0.1.0-beta.7"
+  }
+}

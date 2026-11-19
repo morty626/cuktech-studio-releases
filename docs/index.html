@@ -8,6 +8,7 @@
   <meta name="description" content="CUKTECH Studio 是为酷态科 10 号 Ultra 打造的社区充电工作台。查看实时功率、管理端口与充电场景，并下载 Mac 或 Linux 测试版。">
   <title>CUKTECH Studio · 酷态科充电工作台</title>
   <link rel="stylesheet" href="./assets/site.css">
+  <style>#mac-beta-release[hidden] { display: none; }</style>
 </head>
 <body>
   <a class="skip-link" href="#main">跳至正文</a>
@@ -72,17 +73,24 @@
       <div class="container section">
         <div class="section-heading">
           <h2 id="downloads-title">下载 CUKTECH Studio</h2>
-          <p>选择适合你设备的测试版。</p>
+          <p>选择适合你设备的版本。</p>
         </div>
         <div class="download-grid">
-          <!-- Public channel download URLs are maintained here. -->
           <article class="download">
             <h3>Mac</h3>
             <p class="requirements">Apple Silicon · macOS 14 或更新版本</p>
             <p>安装菜单栏 App，通过 Mac 的内置蓝牙连接设备。</p>
+            <div id="mac-stable" hidden>
+              <div class="download-actions">
+                <a class="button primary" id="mac-stable-download"></a>
+                <a class="text-link" id="mac-stable-release">正式版说明</a>
+              </div>
+            </div>
+            <p class="requirements" id="mac-status" role="status">Mac 版本信息暂不可用，请查看 GitHub Releases。</p>
             <div class="download-actions">
-              <a class="button primary" href="https://github.com/morty626/homebrew-tap/releases/download/v0.1.0-beta.7/CUKTECH-Studio-0.1.0-beta.7-macos-arm64.zip">下载 Mac ZIP</a>
-              <a class="text-link" href="./guide/#homebrew">通过 Homebrew 安装</a>
+              <a class="button primary" id="mac-beta-download" href="https://github.com/morty626/cuktech-studio-releases/releases">前往 Releases 下载 Mac 版</a>
+              <a class="text-link" id="mac-beta-release" hidden>测试版说明</a>
+              <a class="text-link" href="./guide/#homebrew">通过 Homebrew 安装测试版</a>
             </div>
           </article>
           <article class="download">
@@ -90,12 +98,12 @@
             <p class="requirements">Docker Compose 2.24.4+ · 蓝牙适配器与 BlueZ</p>
             <p>在有蓝牙适配器的 Linux 主机上同时运行工作台和连接服务。</p>
             <div class="download-actions">
-              <a class="button secondary" href="https://raw.githubusercontent.com/morty626/homebrew-tap/main/docker/compose.beta.yaml">查看 Compose 模板</a>
+              <a class="button secondary" href="https://raw.githubusercontent.com/morty626/cuktech-studio-releases/main/docker/compose.beta.yaml">查看 Compose 模板</a>
               <a class="text-link" href="./guide/#linux">阅读部署步骤</a>
             </div>
           </article>
         </div>
-        <p class="release-link"><a class="text-link" href="https://github.com/morty626/homebrew-tap/releases">查看 GitHub 版本记录</a></p>
+        <p class="release-link"><a class="text-link" href="https://github.com/morty626/cuktech-studio-releases/releases">查看 GitHub 版本记录</a></p>
       </div>
     </section>
   </main>
@@ -106,9 +114,67 @@
       <nav aria-label="项目链接">
         <a href="https://github.com/morty626/cuktech-studio-releases">GitHub 项目</a>
         <a href="https://github.com/morty626/cuktech-studio-releases/issues">问题反馈</a>
-        <a href="https://github.com/morty626/cuktech-studio">开发仓库（需权限）</a>
       </nav>
     </div>
   </footer>
+  <script>
+    const releaseOrigin = 'https://github.com';
+    const releasePath = '/morty626/cuktech-studio-releases/releases';
+    const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+    const betaVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-beta\.[1-9]\d*$/;
+
+    function publicReleasePath(value) {
+      if (typeof value !== 'string') throw new Error('Missing release URL');
+      const url = new URL(value);
+      if (url.origin !== releaseOrigin || value !== releaseOrigin + url.pathname) {
+        throw new Error('Invalid release URL');
+      }
+      return url.pathname;
+    }
+
+    function validateChannel(channel, entry) {
+      const versionPattern = channel === 'stable' ? stableVersion : betaVersion;
+      if (typeof entry?.version !== 'string' || !versionPattern.test(entry.version) ||
+          typeof entry.mac_arm64?.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(entry.mac_arm64.sha256)) {
+        throw new Error('Invalid channel metadata');
+      }
+
+      const tag = `v${entry.version}`;
+      if (publicReleasePath(entry.release) !== `${releasePath}/tag/${tag}` ||
+          publicReleasePath(entry.mac_arm64.url) !==
+            `${releasePath}/download/${tag}/CUKTECH-Studio-${entry.version}-macos-arm64.zip`) {
+        throw new Error('Invalid release paths');
+      }
+    }
+
+    async function enhanceMacDownloads() {
+      const response = await fetch('./channels.json', { mode: 'same-origin', credentials: 'omit', redirect: 'error' });
+      if (!response.ok) throw new Error('Channel manifest unavailable');
+      const manifest = await response.json();
+      if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest) ||
+          Object.keys(manifest).some(channel => channel !== 'beta' && channel !== 'stable')) {
+        throw new Error('Invalid channel manifest');
+      }
+
+      for (const [channel, entry] of Object.entries(manifest)) validateChannel(channel, entry);
+
+      for (const [channel, entry] of Object.entries(manifest)) {
+        const download = document.getElementById(`mac-${channel}-download`);
+        const release = document.getElementById(`mac-${channel}-release`);
+        const label = channel === 'stable' ? '正式版' : '测试版';
+        download.href = entry.mac_arm64.url;
+        download.textContent = `下载 ${label} ${entry.version}`;
+        release.href = entry.release;
+        release.hidden = false;
+      }
+
+      document.getElementById('mac-stable').hidden = !manifest.stable;
+      const status = document.getElementById('mac-status');
+      status.hidden = Boolean(manifest.stable);
+      status.textContent = manifest.stable ? '' : 'Mac 正式版尚未发布。';
+    }
+
+    enhanceMacDownloads().catch(error => console.warn('Mac channel manifest:', error));
+  </script>
 </body>
 </html>
