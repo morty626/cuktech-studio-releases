@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111212">
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/icon.png">
+  <meta name="description" content="在 Apple Silicon Mac 上通过 ZIP 或 Homebrew 安装 CUKTECH Studio，或在有蓝牙的 Linux 主机上使用 Docker Compose 部署。">
+  <title>安装与更新文档 · CUKTECH Studio</title>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="../" aria-label="CUKTECH Studio 首页">
+        <span class="mark" aria-hidden="true"></span>
+        <span>CUKTECH <strong>Studio</strong></span>
+      </a>
+      <nav aria-label="主导航">
+        <a href="../#features">功能</a>
+        <a href="./" aria-current="page">文档</a>
+        <a href="../#downloads">下载</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container guide" id="main" tabindex="-1">
+    <header class="guide-heading">
+      <h1>安装与更新文档</h1>
+      <p>在 Apple Silicon Mac 上安装 App，或用 Docker Compose 在 Linux 主机上部署测试版。</p>
+    </header>
+
+    <div class="guide-grid">
+      <nav class="guide-nav" aria-label="文档目录">
+        <a href="#mac">Mac 安装 ZIP</a>
+        <a href="#homebrew">Mac Homebrew</a>
+        <a href="#linux">Linux Docker Compose</a>
+      </nav>
+
+      <div class="guide-content">
+        <section id="mac" aria-labelledby="mac-title">
+          <h2 id="mac-title">Mac 安装 ZIP</h2>
+          <p>需要 Apple Silicon 和 macOS 14 或更新版本。</p>
+          <ol>
+            <li>从<a href="../#downloads">下载区</a>获取 Mac ZIP，解压后将 CUKTECH Studio 拖到「应用程序」。</li>
+            <li>打开 App，按系统提示允许蓝牙访问，再从菜单栏打开工作台。</li>
+          </ol>
+          <p>测试版使用临时签名，首次打开时 macOS 可能会要求确认来源。</p>
+          <h3>更新</h3>
+          <p>退出正在运行的 App，再用新版 ZIP 中的 App 替换「应用程序」里的旧版。配置和历史记录保存在用户数据目录。</p>
+        </section>
+
+        <section id="homebrew" aria-labelledby="homebrew-title">
+          <h2 id="homebrew-title">Mac 通过 Homebrew 安装</h2>
+          <p>系统要求与 ZIP 安装相同。已经手动安装同名 App 时，先退出并把旧 App 移到备份位置。</p>
+          <pre><code>brew install --cask morty626/tap/cuktech-studio-beta</code></pre>
+          <p>Homebrew 7 如出现信任提示，按提示仅信任该 Cask。安装后从菜单栏打开工作台。</p>
+          <h3>更新</h3>
+          <pre><code>brew update
+brew upgrade --cask morty626/tap/cuktech-studio-beta</code></pre>
+        </section>
+
+        <section id="linux" aria-labelledby="linux-title">
+          <h2 id="linux-title">Linux Docker Compose</h2>
+          <p>需要 Docker Compose 2.24.4 或更新版本，以及 Linux 主机上的蓝牙适配器和 BlueZ。</p>
+          <ol>
+            <li>从<a href="../#downloads">下载区</a>打开 Compose 模板，在一个新目录中保存为 <code>compose.yaml</code>。</li>
+            <li>在该目录运行下面的命令。</li>
+          </ol>
+          <pre><code>docker compose up -d --wait --wait-timeout 120</code></pre>
+          <p>在部署主机打开 <code>http://127.0.0.1:28753/</code> 进入工作台。后端默认使用 28759 端口。可以在模板顶部的 <code>x-cuktech-ports</code> 中调整这两个端口。</p>
+          <h3>更新</h3>
+          <p>在原目录执行以下命令，并继续使用原来的 Compose 项目名和数据卷。</p>
+          <pre><code>docker compose pull
+docker compose up -d --wait --wait-timeout 120</code></pre>
+          <p>模板默认跟随 <code>beta</code> 渠道。需要固定测试版本时，可以在同目录的 <code>.env</code> 中设置 <code>CUKTECH_VERSION</code> 为对应的发布标签。</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>CUKTECH Studio · 独立社区项目</p>
+      <nav aria-label="项目链接">
+        <a href="../">项目主页</a>
+        <a href="https://github.com/morty626/cuktech-studio-releases/issues">问题反馈</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
