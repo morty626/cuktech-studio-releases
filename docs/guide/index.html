@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111212">
+  <meta name="theme-color" content="#f8f8f5">
   <link rel="icon" type="image/png" sizes="64x64" href="../assets/icon.png">
   <meta name="description" content="在 Apple Silicon Mac 上通过 ZIP 或 Homebrew 安装 CUKTECH Studio，或在有蓝牙的 Linux 主机上使用 Docker Compose 部署。">
   <title>安装与更新文档 · CUKTECH Studio</title>
@@ -13,14 +13,14 @@
   <a class="skip-link" href="#main">跳至正文</a>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="wordmark" href="../" aria-label="CUKTECH Studio 首页">
+      <a class="wordmark" href="../index.html" aria-label="CUKTECH Studio 首页">
         <span class="mark" aria-hidden="true"></span>
         <span>CUKTECH <strong>Studio</strong></span>
       </a>
       <nav aria-label="主导航">
-        <a href="../#features">功能</a>
-        <a href="./" aria-current="page">文档</a>
-        <a href="../#downloads">下载</a>
+        <a href="./index.html" aria-current="page">文档</a>
+        <a href="https://github.com/morty626/cuktech-studio-releases">GitHub</a>
+        <a class="nav-download" href="../index.html#downloads">下载</a>
       </nav>
     </div>
   </header>
@@ -28,7 +28,7 @@
   <main class="container guide" id="main" tabindex="-1">
     <header class="guide-heading">
       <h1>安装与更新文档</h1>
-      <p>在 Apple Silicon Mac 上安装 App，或用 Docker Compose 在 Linux 主机上部署测试版。</p>
+      <p>Mac 使用内置蓝牙。Linux 使用 Docker 宿主机上的蓝牙适配器，首次部署先检查 BlueZ 和系统 D-Bus。</p>
     </header>
 
     <div class="guide-grid">
@@ -36,6 +36,9 @@
         <a href="#mac">Mac 安装 ZIP</a>
         <a href="#homebrew">Mac Homebrew</a>
         <a href="#linux">Linux Docker Compose</a>
+        <a href="#bluez">安装与检查 BlueZ</a>
+        <a href="#first-connection">首次连接</a>
+        <a href="#troubleshooting">常见错误</a>
       </nav>
 
       <div class="guide-content">
@@ -43,7 +46,7 @@
           <h2 id="mac-title">Mac 安装 ZIP</h2>
           <p>需要 Apple Silicon 和 macOS 14 或更新版本。</p>
           <ol>
-            <li>从<a href="../#downloads">下载区</a>获取 Mac ZIP，解压后将 CUKTECH Studio 拖到「应用程序」。</li>
+            <li>从<a href="../index.html#downloads">下载区</a>获取 Mac ZIP，解压后将 CUKTECH Studio 拖到「应用程序」。</li>
             <li>打开 App，按系统提示允许蓝牙访问，再从菜单栏打开工作台。</li>
           </ol>
           <p>测试版使用临时签名，首次打开时 macOS 可能会要求确认来源。</p>
@@ -63,18 +66,78 @@ brew upgrade --cask morty626/tap/cuktech-studio-beta</code></pre>
 
         <section id="linux" aria-labelledby="linux-title">
           <h2 id="linux-title">Linux Docker Compose</h2>
-          <p>需要 Docker Compose 2.24.4 或更新版本，以及 Linux 主机上的蓝牙适配器和 BlueZ。</p>
-          <ol>
-            <li>从<a href="../#downloads">下载区</a>打开 Compose 模板，在一个新目录中保存为 <code>compose.yaml</code>。</li>
-            <li>在该目录运行下面的命令。</li>
-          </ol>
-          <pre><code>docker compose up -d --wait --wait-timeout 120</code></pre>
-          <p>在部署主机打开 <code>http://127.0.0.1:28753/</code> 进入工作台。后端默认使用 28759 端口。可以在模板顶部的 <code>x-cuktech-ports</code> 中调整这两个端口。</p>
+          <p>在实际运行 Docker Engine 的 Linux 主机上执行以下步骤。后端通过宿主机的系统 D-Bus 调用 BlueZ。Docker 若运行在虚拟机里，先把蓝牙适配器直通给这台虚拟机，再在虚拟机里检查。</p>
+          <h3>1. 检查 Docker</h3>
+          <pre><code>docker info
+docker compose version</code></pre>
+          <p>第一条应能显示 Server 信息，第二条应显示 Compose 2.24.4 或更高版本。缺少 Docker 时，按发行版的<a href="https://docs.docker.com/engine/install/">Docker Engine 安装说明</a>安装；已有 Engine 但没有 <code>docker compose</code> 时，安装<a href="https://docs.docker.com/compose/install/linux/">Compose 插件</a>。</p>
+          <h3 id="bluez">2. 安装与检查 BlueZ</h3>
+          <p>先运行 <code>bluetoothctl --version</code>。如果提示 <code>command not found</code>，在宿主机安装 BlueZ。以下命令适用于使用 systemd 的 Debian 和 Ubuntu。</p>
+          <pre><code>sudo apt update
+sudo apt install bluez
+sudo systemctl enable --now bluetooth.service</code></pre>
+          <p>在同一台主机上逐项检查。使用其他发行版时，先通过其包管理器安装 BlueZ 服务和提供 <code>bluetoothctl</code> 的工具包。</p>
+          <pre><code>systemctl is-active bluetooth.service
+test -S /var/run/dbus/system_bus_socket &amp;&amp; echo "D-Bus socket OK"
+bluetoothctl list
+bluetoothctl show</code></pre>
+          <p>应依次看到 <code>active</code>、<code>D-Bus socket OK</code>、至少一个 <code>Controller</code>，以及控制器信息中的 <code>Powered: yes</code>。某项未通过时，先看下面的<a href="#troubleshooting">常见错误</a>。</p>
+          <h3>3. 保存模板并启动</h3>
+          <p>在新目录里，把<a href="../index.html#downloads">下载区</a>的 Linux Compose 模板保存为 <code>compose.yaml</code>。在该目录执行：</p>
+          <pre><code>docker compose config --quiet
+docker compose up -d --wait --wait-timeout 120
+docker compose ps</code></pre>
+          <p>配置检查成功时没有输出。启动后应能看到 <code>backend</code> 和 <code>frontend</code> 在运行，后端健康检查通过。在部署主机的浏览器打开 <code>http://127.0.0.1:28753/</code>。</p>
+          <h3 id="first-connection">4. 首次连接充电器</h3>
+          <p>首次使用新的数据卷时，工作台会登记本套后端。给充电器通电，在「系统配置」中添加或导入设备，核对设备名称，再查看 BLE 连接和认证状态。如果同一台充电器正由另一套 Studio 控制，先断开那边的连接。</p>
+          <p>容器健康表示 HTTP 服务就绪。接入一个用电设备，确认对应端口的读数随负载变化，才算验证了蓝牙数据链路。</p>
           <h3>更新</h3>
           <p>在原目录执行以下命令，并继续使用原来的 Compose 项目名和数据卷。</p>
           <pre><code>docker compose pull
 docker compose up -d --wait --wait-timeout 120</code></pre>
           <p>模板默认跟随 <code>beta</code> 渠道。需要固定测试版本时，可以在同目录的 <code>.env</code> 中设置 <code>CUKTECH_VERSION</code> 为对应的发布标签。</p>
+          <p>更新前备份设备配置和充电历史。需要停机备份时，先运行 <code>docker compose stop</code>，备份完整的 <code>backend-data</code> 和 <code>frontend-data</code> 命名卷，再启动。<code>docker compose down -v</code> 会删除这两个卷。</p>
+        </section>
+
+        <section id="troubleshooting" aria-labelledby="troubleshooting-title">
+          <h2 id="troubleshooting-title">常见错误</h2>
+          <p>Linux 的服务检查在 Docker 宿主机执行。涉及 <code>docker compose</code> 的命令，在保存 <code>compose.yaml</code> 的目录执行。</p>
+
+          <h3>docker info 提示无法连接 Docker daemon</h3>
+          <p>用 <code>docker context show</code> 核对当前连接的主机。在使用系统级 Docker Engine 的 Debian / Ubuntu 上，用 <code>systemctl is-active docker</code> 检查服务；若已安装但未启动，执行 <code>sudo systemctl start docker</code>。如果报错是访问 Docker socket 时 <code>permission denied</code>，用已有 Docker 管理权限的账号操作，再用 <code>docker info</code> 确认能看到 Server 信息。</p>
+
+          <h3>找不到 bluetoothctl，或 bluetooth.service 未启动</h3>
+          <p>出现 <code>bluetoothctl: command not found</code> 或 <code>Unit bluetooth.service could not be found</code>，按<a href="#bluez">宿主机 BlueZ 安装步骤</a>补齐软件包。若服务存在但处于 <code>inactive</code>，运行 <code>sudo systemctl start bluetooth.service</code>。启动失败或被跳过时，查看本次开机的服务日志，再检查适配器是否已被内核识别。</p>
+          <pre><code>systemctl status bluetooth.service --no-pager
+journalctl -b -u bluetooth.service -n 50 --no-pager</code></pre>
+
+          <h3>No default controller available，或 Powered: no</h3>
+          <p>先运行 <code>bluetoothctl list</code>。列表为空时，检查宿主机上的 <code>ls /sys/class/bluetooth</code> 是否列出 <code>hci0</code> 等控制器。若没有，检查适配器连接、驱动和固件；虚拟机还要核对 USB 直通。内核日志可用 <code>sudo journalctl -k -b | grep -i bluetooth</code> 查看。</p>
+          <p>控制器存在但显示 <code>Powered: no</code> 时，用 <code>rfkill list bluetooth</code> 检查阻止状态。Debian / Ubuntu 缺少此工具时可用 <code>sudo apt install rfkill</code> 安装。若为 <code>Soft blocked: yes</code>，运行 <code>sudo rfkill unblock bluetooth</code>；若为硬件阻止，先检查设备开关或固件设置。随后执行 <code>bluetoothctl power on</code>，用 <code>bluetoothctl show</code> 确认 <code>Powered: yes</code>。</p>
+
+          <h3>启动时报 system_bus_socket 挂载失败</h3>
+          <p>模板直接挂载 <code>/var/run/dbus/system_bus_socket</code>。若报告 <code>bind source path does not exist</code>，回到 Docker 宿主机运行下面的命令。最后一条应输出 <code>socket</code>。</p>
+          <pre><code>systemctl status dbus.socket --no-pager
+LC_ALL=C stat -Lc '%F' /var/run/dbus/system_bus_socket</code></pre>
+          <p>以 Debian / Ubuntu 为例，缺少系统 D-Bus 时安装 <code>sudo apt install dbus</code>；若 socket 单元已安装但未启动，运行 <code>sudo systemctl start dbus.socket</code>。这个路径由系统服务创建，手工建立同名文件或目录无法提供总线。确认路径是 socket、<code>bluetoothctl show</code> 能返回控制器后，再运行启动命令。</p>
+
+          <h3>启动超时、后端 unhealthy 或端口已被占用</h3>
+          <p>先看哪个服务退出，以及它退出前的报错。模板会等待后端健康检查成功后再启动前端。</p>
+          <pre><code>docker compose ps -a
+docker compose logs --tail=80 backend frontend
+ss -ltnp | grep -E ':(28753|28759)\b'</code></pre>
+          <p>若报告 <code>address already in use</code> 或 <code>port is already allocated</code>，在同目录的 <code>.env</code> 中只调整冲突的端口，例如 <code>CUKTECH_FRONTEND_PORT=28754</code>。后端对应 <code>CUKTECH_BACKEND_PORT</code>。重新执行 <code>docker compose up -d --wait --wait-timeout 120</code>，再用新端口访问。已有安装若修改后端端口，还要在工作台的后端地址设置里同步原有记录。</p>
+
+          <h3>服务器本机能打开工作台，另一台电脑打不开</h3>
+          <p>默认前端绑定在服务器的 <code>127.0.0.1:28753</code>。在自己的电脑访问这个地址，访问的是自己的电脑。若已有 SSH 登录权限，可从自己的电脑建立端口转发。把示例用户名和地址换成实际值：</p>
+          <pre><code>ssh -N -L 28753:127.0.0.1:28753 user@192.168.1.20</code></pre>
+          <p>保持该终端打开，再在自己电脑的浏览器访问 <code>http://127.0.0.1:28753/</code>。结束访问时按 Ctrl+C 关闭转发。</p>
+
+          <h3>页面能打开，但充电器离线或没有读数</h3>
+          <p>先确认宿主机的 <code>bluetoothctl show</code> 显示 <code>Powered: yes</code>，再检查充电器供电、与适配器的距离，以及其他控制端是否仍占用连接。若界面提示认证失败，在「系统配置」中核对导入的是当前充电器。重新连接后，按<a href="#first-connection">首次连接</a>中的方法检查实际端口读数。</p>
+
+          <h3>Mac 打开了 App，却找不到设备</h3>
+          <p>从菜单栏打开工作台，触发一次蓝牙连接。确认 Mac 的蓝牙已打开，并在「系统设置 → 隐私与安全性 → 蓝牙」中允许 CUKTECH Studio 使用蓝牙。若此前拒绝过，修改权限后退出并重新打开 App，再查看连接状态。</p>
         </section>
       </div>
     </div>
@@ -84,7 +147,7 @@ docker compose up -d --wait --wait-timeout 120</code></pre>
     <div class="container footer-inner">
       <p>CUKTECH Studio · 独立社区项目</p>
       <nav aria-label="项目链接">
-        <a href="../">项目主页</a>
+        <a href="../index.html">项目主页</a>
         <a href="https://github.com/morty626/cuktech-studio-releases/issues">问题反馈</a>
       </nav>
     </div>
