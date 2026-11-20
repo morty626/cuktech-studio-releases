@@ -8,7 +8,6 @@
   <title>CUKTECH Studio · 酷态科充电工作台</title>
   <link rel="icon" type="image/png" href="./assets/icon.png">
   <link rel="stylesheet" href="./assets/site.css">
-  <style>#mac-beta-release[hidden] { display: none; }</style>
 </head>
 <body class="home">
   <a class="skip-link" href="#main">跳至正文</a>
@@ -20,7 +19,6 @@
       <nav aria-label="主导航">
         <a href="./guide/index.html">文档</a>
         <a href="https://github.com/morty626/cuktech-studio-releases">GitHub</a>
-        <a class="nav-download" href="#downloads">安装方式</a>
       </nav>
     </div>
   </header>
@@ -34,7 +32,7 @@
           <p class="hero-description">通过蓝牙查看各端口功率、追踪充电历史并管理充电设置。<br>支持 Apple Silicon Mac 和 Linux。</p>
         </div>
         <div class="actions">
-          <a class="button solid" href="#downloads">下载</a>
+          <a class="text-link" href="#downloads">安装方式 <span aria-hidden="true">↓</span></a>
         </div>
       </div>
       <div class="stage container" id="preview">
@@ -44,8 +42,8 @@
             <span class="preview-title">设备总览</span>
             <div class="mode-picker">
               <label><input type="radio" name="appearance" value="compare" checked><span>对照</span></label>
-              <label><input type="radio" name="appearance" value="night"><span>黑夜</span></label>
-              <label><input type="radio" name="appearance" value="day"><span>白天</span></label>
+              <label><input type="radio" name="appearance" value="night"><span>深色模式</span></label>
+              <label><input type="radio" name="appearance" value="day"><span>浅色模式</span></label>
             </div>
           </div>
           <figure>
@@ -53,11 +51,6 @@
               <img src="./assets/workbench.webp" width="1256" height="818" alt="模拟充电读数：C1 输出 65 W，C2 输出 18 W，总输出 83 W。">
               <img class="day-view" src="./assets/workbench-day.webp" width="1256" height="818" alt="">
             </div>
-            <figcaption>
-              <span class="caption-compare">左侧黑夜 · 右侧白天</span>
-              <span class="caption-night">黑夜模式</span>
-              <span class="caption-day">白天模式</span>
-            </figcaption>
           </figure>
         </fieldset>
       </div>
@@ -74,37 +67,39 @@
             <div>
               <h3>Mac App</h3>
               <p>Apple Silicon · macOS 14 及以上</p>
-              <p id="mac-status" role="status">Mac 版本信息暂不可用，请查看 GitHub Releases。</p>
+              <p id="mac-status"><a class="text-link" href="https://github.com/morty626/cuktech-studio-releases/releases">查看 GitHub 发布页</a></p>
             </div>
             <div>
               <div id="mac-stable" hidden>
                 <div class="platform-actions">
-                  <a class="button solid" id="mac-stable-download"></a>
+                  <a class="button solid" id="mac-stable-download" download></a>
                   <a class="text-link" id="mac-stable-release">正式版说明</a>
                 </div>
               </div>
-              <div id="mac-beta"><div class="platform-actions">
-                <a class="button solid" id="mac-beta-download" href="https://github.com/morty626/cuktech-studio-releases/releases">前往 Releases 下载 Mac 版</a>
-                <a class="text-link" id="mac-beta-release" hidden>测试版说明</a>
-              </div></div>
+              <div id="mac-beta" hidden>
+                <div class="platform-actions">
+                  <a class="button solid" id="mac-beta-download" download></a>
+                  <a class="text-link" id="mac-beta-release">测试版说明</a>
+                </div>
+              </div>
               <div class="platform-actions">
-                <a class="text-link" href="./guide/index.html#mac">ZIP 安装与首次打开</a>
-                <a class="text-link" href="./guide/index.html#homebrew">Homebrew 安装</a>
+                <a class="text-link" href="./guide/index.html#mac">查看 ZIP 安装指南</a>
+                <a class="text-link" href="./guide/index.html#homebrew">查看 Homebrew 指南</a>
               </div>
             </div>
           </article>
           <article class="platform">
             <div><h3>Mac · Docker</h3><p>容器运行工作台，Mac App 负责蓝牙连接。</p></div>
             <div class="platform-actions">
-              <a class="button solid" href="./guide/index.html#mac-docker">查看 Mac 部署步骤</a>
-              <a class="text-link" href="./downloads/compose.mac.beta.yaml" download>下载 Mac 测试版模板</a>
+              <a class="button solid" href="./downloads/compose.mac.beta.yaml" download>下载 Mac 测试版模板（YAML）</a>
+              <a class="text-link" href="./guide/index.html#mac-docker">查看 Mac 部署指南</a>
             </div>
           </article>
           <article class="platform">
             <div><h3>Linux · Docker</h3><p>前后端双容器 · Docker Compose 2.24.4+ · BlueZ</p></div>
             <div class="platform-actions">
-              <a class="button solid" href="./guide/index.html#linux">查看 Linux 安装步骤</a>
-              <a class="text-link" href="https://raw.githubusercontent.com/morty626/cuktech-studio-releases/main/docker/compose.beta.yaml">获取测试版 Compose 模板</a>
+              <a class="text-link" id="linux-template" href="https://raw.githubusercontent.com/morty626/cuktech-studio-releases/main/docker/compose.beta.yaml">查看 Linux 模板原文</a>
+              <a class="text-link" href="./guide/index.html#linux">查看 Linux 部署指南</a>
             </div>
           </article>
         </div>
@@ -115,7 +110,6 @@
     <div class="container footer-inner">
       <p>CUKTECH Studio · 独立社区项目</p>
       <nav aria-label="项目链接">
-        <a href="https://github.com/morty626/cuktech-studio-releases">公开项目</a>
         <a href="https://github.com/morty626/cuktech-studio-releases/issues">问题反馈</a>
       </nav>
     </div>
@@ -188,11 +182,9 @@
         const release = document.getElementById(`mac-${channel}-release`);
         const label = channel === 'stable' ? '正式版' : '测试版';
         download.href = entry.mac_arm64.url;
-        download.textContent = `下载 Mac ${label}`;
+        download.textContent = `下载 Mac ${label}（ZIP）`;
         release.href = entry.release;
-        release.textContent = `v${entry.version} · ZIP`;
-        release.setAttribute('aria-label', `查看 Mac ${label} v${entry.version} 的 ZIP 发行说明`);
-        release.hidden = false;
+        release.textContent = `查看 v${entry.version} 发行说明`;
       }
 
       document.getElementById('mac-stable').hidden = !manifest.stable;
@@ -203,6 +195,18 @@
     }
 
     enhanceMacDownloads().catch(error => console.warn('Mac channel manifest:', error));
+
+    async function enableLinuxDownload() {
+      const link = document.getElementById('linux-template');
+      // GitHub serves the cross-origin template as inline text. A blob URL lets the browser save it.
+      const response = await fetch(link.href, { credentials: 'omit', cache: 'no-cache' });
+      if (!response.ok) throw new Error(`Template request failed: ${response.status}`);
+      link.href = URL.createObjectURL(await response.blob());
+      link.download = 'compose.yaml';
+      link.textContent = '下载 Linux 测试版模板（YAML）';
+      link.className = 'button solid';
+    }
+    enableLinuxDownload().catch(error => console.warn('Linux Compose template:', error));
   </script>
 </body>
 </html>

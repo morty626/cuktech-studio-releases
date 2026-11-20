@@ -208,14 +208,9 @@ p {
   text-decoration: none;
 }
 
-.actions .button {
-  min-width: 7rem;
-  min-height: 3rem;
-  border-radius: 0.75rem;
-}
-
-.actions .button:active {
-  box-shadow: inset 0 2px 4px #0002;
+.actions .text-link {
+  gap: 0.45rem;
+  font-weight: 650;
 }
 
 .outline {
@@ -249,7 +244,7 @@ p {
   white-space: nowrap;
 }
 
-.preview-header, .instrument figcaption {
+.preview-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -346,15 +341,8 @@ p {
   content: "";
 }
 
-.instrument:has(:checked:not([value="compare"])) .preview-screen::after,
-.instrument .caption-night, .instrument .caption-day,
-.instrument:has(:checked:not([value="compare"])) .caption-compare {
+.instrument:has(:checked:not([value="compare"])) .preview-screen::after {
   display: none;
-}
-
-.instrument:has([value="night"]:checked) .caption-night,
-.instrument:has([value="day"]:checked) .caption-day {
-  display: inline;
 }
 
 .day-view {
@@ -382,12 +370,6 @@ p {
   width: 100%;
   height: auto;
   background: #101010;
-}
-
-.instrument figcaption {
-  padding: 0.85rem 0.1rem 0;
-  color: var(--muted);
-  font-size: 0.8125rem;
 }
 
 .install h2 {
