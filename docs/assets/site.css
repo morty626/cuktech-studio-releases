@@ -509,6 +509,10 @@ p {
   margin-block-start: 0.35rem;
 }
 
+.charger-tutorial { margin-block-start: 1rem; }
+.charger-tutorial a { display: block; width: fit-content; max-width: 100%; }
+.charger-tutorial img { display: block; max-width: 100%; height: auto; }
+
 .guide code {
   font-family: "SFMono-Regular", Consolas, monospace;
   color: var(--accent);

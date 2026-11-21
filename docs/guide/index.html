@@ -38,6 +38,7 @@
         <a href="#linux">Linux Docker Compose</a>
         <a href="#bluez">安装与检查 BlueZ</a>
         <a href="#first-connection">首次连接</a>
+        <a href="#add-charger">添加充电器</a>
         <a href="#troubleshooting">常见错误</a>
       </nav>
 
@@ -48,7 +49,7 @@
           <ol>
             <li>从<a href="../index.html#downloads">下载区</a>获取 Mac ZIP，解压后将 CUKTECH Studio 拖到「应用程序」。</li>
             <li>打开 App，按系统提示允许蓝牙访问，再从菜单栏打开工作台。</li>
-            <li>在「系统配置」中选择「从小米云导入」，用米家 App 扫码并选择充电器。预览后保存，工作台会读回配置核对。可在「设备与连接设置」查看连接和认证状态。</li>
+            <li>按<a href="#add-charger">添加充电器图解</a>从小米云导入设备。</li>
           </ol>
           <p>测试版使用临时签名，首次打开时 macOS 可能会要求确认来源。</p>
           <h3>更新</h3>
@@ -90,7 +91,7 @@ docker compose up -d --wait --wait-timeout 120
 docker compose ps</code></pre>
           <p>配置检查成功时没有输出。启动后应能看到 <code>backend</code> 和 <code>frontend</code> 在运行，后端健康检查通过。在部署主机的浏览器打开 <code>http://127.0.0.1:28753/</code>。</p>
           <h3 id="first-connection">4. 首次连接充电器</h3>
-          <p>首次使用新的数据卷时，工作台会登记本套后端。给充电器通电，在「系统配置」中添加或导入设备，核对设备名称，再查看 BLE 连接和认证状态。如果同一台充电器正由另一套 Studio 控制，先断开那边的连接。</p>
+          <p>首次使用新的数据卷时，工作台会登记本套后端。给充电器通电，按<a href="#add-charger">添加充电器图解</a>导入设备，再查看 BLE 连接和认证状态。如果同一台充电器正由另一套 Studio 控制，先断开那边的连接。</p>
           <p>容器健康表示 HTTP 服务就绪。接入一个用电设备，确认对应端口的读数随负载变化，才算验证了蓝牙数据链路。</p>
           <h3>更新</h3>
           <p>在原目录执行以下命令，并继续使用原来的 Compose 项目名和数据卷。</p>
@@ -98,6 +99,20 @@ docker compose ps</code></pre>
 docker compose up -d --wait --wait-timeout 120</code></pre>
           <p>模板默认跟随 <code>beta</code> 渠道。需要固定测试版本时，可以在同目录的 <code>.env</code> 中设置 <code>CUKTECH_VERSION</code> 为对应的发布标签。</p>
           <p>更新前备份设备配置和充电历史。需要停机备份时，先运行 <code>docker compose stop</code>，备份完整的 <code>backend-data</code> 和 <code>frontend-data</code> 命名卷，再启动。<code>docker compose down -v</code> 会删除这两个卷。</p>
+        </section>
+
+        <section id="add-charger" aria-labelledby="add-charger-title">
+          <h2 id="add-charger-title">添加充电器</h2>
+          <ol>
+            <li>在工作台右上角打开「系统配置」。</li>
+            <li>进入「充电器」选项卡，点击「从小米云导入」。</li>
+            <li>选择米家账号所在区域，点击「获取登录二维码」，用米家 App 扫码确认。</li>
+            <li>勾选要添加的充电器，点击「导入所选 … 台并预览」。</li>
+            <li>核对设备名称和修改内容，点击「保存并重启服务」。回到工作台，在「设备与连接设置」中查看蓝牙连接状态。</li>
+          </ol>
+          <figure class="charger-tutorial">
+            <a href="../assets/add-charger.png"><img src="../assets/add-charger.png" width="592" height="1413" loading="lazy" alt="查看添加充电器五步操作原图"></a>
+          </figure>
         </section>
 
         <section id="troubleshooting" aria-labelledby="troubleshooting-title">

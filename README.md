@@ -2,6 +2,16 @@
 
 [项目主页](https://morty626.github.io/cuktech-studio-releases/)提供工作台截图、Mac 安装包、Docker Compose 和校验文件。[安装指南](https://morty626.github.io/cuktech-studio-releases/guide/)说明了平台要求和更新方法。
 
+## 添加充电器
+
+1. 在工作台右上角打开「系统配置」。
+2. 进入「充电器」选项卡，点击「从小米云导入」。
+3. 选择米家账号所在区域，点击「获取登录二维码」，用米家 App 扫码确认。
+4. 勾选要添加的充电器，点击「导入所选 … 台并预览」。
+5. 核对设备名称和修改内容，点击「保存并重启服务」。回到工作台，在「设备与连接设置」中查看蓝牙连接状态。
+
+[![从系统配置到保存设备的五步操作截图](docs/assets/add-charger.png)](docs/assets/add-charger.png)
+
 ## Mac 测试版
 
 需要 Apple Silicon 和 macOS 14 或更新版本。可以在 [Releases](https://github.com/morty626/cuktech-studio-releases/releases) 下载 ZIP，解压并将 App 拖入「应用程序」。测试包使用临时签名，首次打开时 macOS 可能要求确认来源。
