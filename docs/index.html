@@ -74,12 +74,14 @@
                 <div class="platform-actions">
                   <a class="button solid" id="mac-stable-download" download></a>
                   <a class="text-link" id="mac-stable-release">正式版说明</a>
+                  <a class="text-link" id="mac-stable-checksums">SHA256SUMS</a>
                 </div>
               </div>
               <div id="mac-beta" hidden>
                 <div class="platform-actions">
                   <a class="button solid" id="mac-beta-download" download></a>
                   <a class="text-link" id="mac-beta-release">测试版说明</a>
+                  <a class="text-link" id="mac-beta-checksums">SHA256SUMS</a>
                 </div>
               </div>
               <div class="platform-actions">
@@ -178,6 +180,8 @@
         download.textContent = `下载 Mac ${label}（ZIP）`;
         release.href = entry.release;
         release.textContent = `查看 v${entry.version} 发行说明`;
+        document.getElementById(`mac-${channel}-checksums`).href =
+          `${releaseOrigin}${releasePath}/download/v${entry.version}/SHA256SUMS`;
       }
 
       document.getElementById('mac-stable').hidden = !manifest.stable;

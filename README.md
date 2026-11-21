@@ -1,6 +1,6 @@
 # CUKTECH Studio 发布与安装
 
-在这里下载 Mac 安装包、Docker Compose 和校验文件，查看版本更新说明。测试版适合跟进近期迭代。
+[项目主页](https://morty626.github.io/cuktech-studio-releases/)提供工作台截图、Mac 安装包、Docker Compose 和校验文件。[安装指南](https://morty626.github.io/cuktech-studio-releases/guide/)说明了平台要求和更新方法。
 
 ## Mac 测试版
 
