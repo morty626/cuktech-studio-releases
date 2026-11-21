@@ -35,7 +35,6 @@
       <nav class="guide-nav" aria-label="文档目录">
         <a href="#mac">Mac 安装 ZIP</a>
         <a href="#homebrew">Mac Homebrew</a>
-        <a href="#mac-docker">Mac Docker Compose</a>
         <a href="#linux">Linux Docker Compose</a>
         <a href="#bluez">安装与检查 BlueZ</a>
         <a href="#first-connection">首次连接</a>
@@ -63,21 +62,6 @@
           <h3>更新</h3>
           <pre><code>brew update
 brew upgrade --cask morty626/tap/cuktech-studio-beta</code></pre>
-        </section>
-
-        <section id="mac-docker" aria-labelledby="mac-docker-title">
-          <h2 id="mac-docker-title">Mac Docker Compose</h2>
-          <p>适用于已安装 Docker Desktop、希望用容器运行网页工作台的 Mac。先<a href="#mac">安装并打开 Mac App</a>，允许蓝牙访问并保持 App 运行，它为容器提供设备读数。</p>
-          <ol>
-            <li>把<a href="../downloads/compose.mac.beta.yaml" download>Mac 测试版 Compose 模板</a>保存到单独目录，保留文件名 <code>compose.mac.beta.yaml</code>。</li>
-            <li>在 App 菜单栏的「本机端口…」确认内置后端端口。默认是 <code>18399</code>；如果不同，在模板旁的 <code>.env</code> 文件中填写 <code>CUKTECH_MAC_BACKEND_PORT=实际端口</code>。</li>
-            <li>在模板目录执行以下命令，再打开 <code>http://127.0.0.1:28753/</code> 查看端口读数。</li>
-          </ol>
-          <pre><code>docker compose -f compose.mac.beta.yaml config --quiet
-docker compose -f compose.mac.beta.yaml up -d --wait</code></pre>
-          <p>首次启动时，工作台通过 <code>host.docker.internal</code> 连接 Mac 后端。已有数据卷会保留原地址；若后来调整了 App 的后端端口，在「系统配置 → 后端地址」同步修改并连接。</p>
-          <h3>更新</h3>
-          <p>模板默认拉取 <code>beta</code> 渠道的前端镜像。在原目录重新运行上面的启动命令即可更新容器。Mac App 通过原安装方式单独更新。</p>
         </section>
 
         <section id="linux" aria-labelledby="linux-title">
