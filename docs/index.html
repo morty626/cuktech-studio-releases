@@ -94,6 +94,7 @@
             <div><h3>Linux · Docker</h3><p>前后端双容器 · Docker Compose 2.24.4+ · BlueZ</p></div>
             <div class="platform-actions">
               <a class="text-link" id="linux-template" href="https://raw.githubusercontent.com/morty626/cuktech-studio-releases/main/docker/compose.beta.yaml">查看 Linux 模板原文</a>
+              <a class="text-link" id="linux-bundle" hidden></a>
               <a class="text-link" href="./guide/index.html#linux">查看 Linux 部署指南</a>
             </div>
           </article>
@@ -189,6 +190,11 @@
       const first = document.getElementById(latest === manifest.beta ? 'mac-beta' : 'mac-stable');
       first.parentElement.prepend(first);
       document.getElementById('mac-status').hidden = true;
+      const bundle = document.getElementById('linux-bundle');
+      const tag = `v${latest.version}`;
+      bundle.href = `${releaseOrigin}${releasePath}/download/${tag}/CUKTECH-Studio-Compose-${tag}.tar.gz`;
+      bundle.textContent = `下载 ${tag} 部署包`;
+      bundle.hidden = false;
     }
 
     enhanceMacDownloads().catch(error => console.warn('Mac channel manifest:', error));
